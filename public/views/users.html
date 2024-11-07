@@ -22,7 +22,7 @@
         <script>
             $(document).ready(function () {
                 $("#search-button").click(function () {
-                    const url = $('#search-text').val() ? `http://localhost:8888/api/users?name=${$('#search-text').val()}` : `http://localhost:8888/api/users`;
+                    const url = $('#search-text').val() ? `http://localhost:8888/index.php/api/users?name=${$('#search-text').val()}` : `http://localhost:8888/index.php/api/users`;
                     $.ajax({
                         url: url,
                         type: "GET",

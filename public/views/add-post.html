@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Post</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <div id="posts-container">
+        <div class="container">
+            <h3>Add New Post</h3>
+            <form id="post-form">
+                <label for="title-input">Title</label>
+                <input type="text" id="title-input" required minlength="5">
+                <div id="title-error" class="error-text"></div>
+
+                <label for="content-input">Content</label>
+                <textarea id="content-input" rows="5" required minlength="10"></textarea>
+                <div id="content-error" class="error-text"></div>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#post-form').on('submit', function (e) {
+                e.preventDefault();
+                
+                var title = $('#title-input').val();
+                var content = $('#content-input').val();
+
+                $('#title-error').text('');
+                $('#content-error').text('');
+
+                // Frontend validation
+                if (title.length < 5) {
+                    $('#title-error').text("Title must be at least 5 characters long.");
+                    return;
+                }
+                if (content.length < 10) {
+                    $('#content-error').text("Content must be at least 10 characters long.");
+                    return;
+                }
+
+                // AJAX to submit form data
+                $.ajax({
+                    url: 'http://localhost:8888/index.php/api/posts',
+                    type: 'POST',
+                    data: {title: title, content: content},
+                    dataType: 'json',
+                    success: function (response) {
+                        $('#posts-container').append(
+                            `<div>
+                                <h4>Post Added!</h4>
+                                <p><strong>Title:</strong> ${response.title}</p>
+                                <p><strong>Content:</strong> ${response.content}</p>
+                            </div>`
+                        );
+                    },
+                    error: function () {
+                        $('#posts-container').append(
+                            `<div>
+                                <h4>Error Adding Post</h4>
+                                <p>There was an error adding the post. Please try again.</p>
+                            </div>`
+                        );
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Posts</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h3>Search Posts</h3>
+        <form id="search-form">
+            <label for="title-search">Search by Title</label>
+            <input type="text" id="title-search" placeholder="Enter post title">
+            <button type="submit">Search</button>
+            <div id="search-error" class="error-text"></div>
+        </form>
+        
+        <div id="search-results"></div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#search-form').on('submit', function (e) {
+                e.preventDefault();
+
+                var title = $('#title-search').val();
+                $('#search-results').html('');
+                $('#search-error').text('');
+
+                if (title.length < 3) {
+                    $('#search-error').text("Please enter at least 3 characters.");
+                    return;
+                }
+
+                // AJAX request to search posts
+                $.ajax({
+                    url: 'http://localhost:8888/index.php/api/posts',
+                    type: 'GET',
+                    data: {title: title},
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.length === 0) {
+                            $('#search-results').html('<p>No posts found.</p>');
+                        } else {
+                            data.forEach(function (post) {
+                                $('#search-results').append(
+                                    `<div>
+                                        <h5>${post.title}</h5>
+                                        <p>${post.content}</p>
+                                    </div>`
+                                );
+                            });
+                        }
+                    },
+                    error: function () {
+                        $('#search-error').text('Error fetching results.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
